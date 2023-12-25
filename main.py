@@ -2,6 +2,7 @@ import math
 
 import pygame
 import random
+
 pygame.init()
 
 
@@ -18,7 +19,6 @@ class DrawInformation:
         (128, 128, 128),
         (160, 160, 160),
         (192, 192, 192)
-
     ]
 
     FONT = pygame.font.SysFont('timesnewroman', 30)
@@ -40,38 +40,37 @@ class DrawInformation:
         self.min_val = min(lst)
         self.max_val = max(lst)
 
-        self.block_width = math.floor((self.width - self.SIDE_PAD) / len(lst))
+        self.block_width = (self.width - self.SIDE_PAD) / len(lst)
         self.block_height = math.floor((self.height - self.TOP_PAD) / (self.max_val - self.min_val))
         self.start_x = self.SIDE_PAD // 2
 
 
 def generate_starting_list(n, min_val, max_val):
-
-    lst = [random.randint(min_val, max_val) for _ in range(n+1)]
+    lst = [random.randint(min_val, max_val) for _ in range(n + 1)]
     return lst
 
 
-def bubble_sort(draw_info, ascending = True):
+def bubble_sort(draw_info, ascending=True):
     lst = draw_info.lst
 
-    for i in range(len(lst)-1):
+    for i in range(len(lst) - 1):
         for j in range(len(lst) - 1 - i):
             num1 = lst[j]
             num2 = lst[j + 1]
             if (num1 > num2 and ascending) or (num1 < num2 and not ascending):
                 lst[j], lst[j + 1] = lst[j + 1], lst[j]
-                draw_list(draw_info, {j: draw_info.GREEN, j+1: draw_info.RED}, True)
+                draw_list(draw_info, {j: draw_info.GREEN, j + 1: draw_info.RED}, True)
                 yield True
 
 
-def insertionSort(draw_info, ascending = True):
+def insertion_sort(draw_info, ascending=True):
     arr = draw_info.lst
     n = len(arr)  # Get the length of the array
 
     if n <= 1:
         return  # If the array has 0 or 1 element, it is already sorted, so return
 
-    if ascending == True:
+    if ascending:
         for i in range(1, n):  # Iterate over the array starting from the second element
             key = arr[i]  # Store the current element as the key to be inserted in the right position
             j = i - 1
@@ -79,8 +78,9 @@ def insertionSort(draw_info, ascending = True):
             while j >= 0 and key < arr[j]:  # Move elements greater than key one position ahead
                 arr[j + 1] = arr[j]  # Shift elements to the right
                 j -= 1
-            draw_list(draw_info, {arr[j]: draw_info.GREEN, arr[j+1]: draw_info.RED}, clear_bg=True)
+            draw_list(draw_info, {arr[j]: draw_info.GREEN, arr[j + 1]: draw_info.RED, key:draw_info.BLUE}, clear_bg=True)
             arr[j + 1] = key  # Insert the key in the correct position
+            yield True
     else:
         for i in range(n, 1, -1):  # Iterate over the array starting from the second element
             key = arr[i]  # Store the current element as the key to be inserted in the right position
@@ -89,24 +89,26 @@ def insertionSort(draw_info, ascending = True):
             while j >= 0 and key < arr[j]:  # Move elements greater than key one position ahead
                 arr[j + 1] = arr[j]  # Shift elements to the right
                 j -= 1
-            draw_list(draw_info, {arr[j]: draw_info.GREEN, arr[j + 1]: draw_info.RED}, clear_bg=True)
+            draw_list(draw_info, {arr[j]: draw_info.GREEN, arr[j + 1]: draw_info.RED, key:draw_info.BLUE}, clear_bg=True)
             arr[j + 1] = key  # Insert the key in the correct position
+            yield True
 
 
 def draw(draw_info, sorting_alg_name, ascending):
     draw_info.window.fill(draw_info.BACKGROUND_COLOR)
     draw_list(draw_info)
 
-    current_sort = draw_info.FONT.render(f"{sorting_alg_name} - {'Ascending' if ascending == True else "Descending"}", 1, draw_info.BLUE)
+    current_sort = draw_info.FONT.render(f"{sorting_alg_name} - {'Ascending' if ascending == True else "Descending"}",
+                                         1, draw_info.BLUE)
     draw_info.window.blit(current_sort, (draw_info.width / 2 - current_sort.get_width() / 2, 5))
 
     controls = draw_info.FONT.render("R - Reset | SPACE - Start Sorting | A - Ascending | D - Descending", 1,
                                      draw_info.BLACK)
-    draw_info.window.blit(controls, (draw_info.width / 2 - controls.get_width() / 2, current_sort.get_height()+5))
+    draw_info.window.blit(controls, (draw_info.width / 2 - controls.get_width() / 2, current_sort.get_height() + 5))
 
     sorting = draw_info.FONT.render("I - Insertion Sort | B - Bubble Sort", 1, draw_info.BLACK)
     draw_info.window.blit(sorting, (draw_info.width / 2 - sorting.get_width() / 2,
-                                    controls.get_height()+current_sort.get_height()+5))
+                                    controls.get_height() + current_sort.get_height() + 5))
 
     pygame.display.update()
 
@@ -115,7 +117,8 @@ def draw_list(draw_info, color_positions={}, clear_bg=False):
     lst = draw_info.lst
 
     if clear_bg:
-        clear_rect = (draw_info.SIDE_PAD//2, draw_info.TOP_PAD, draw_info.width - draw_info.SIDE_PAD, draw_info.height)
+        clear_rect = (draw_info.SIDE_PAD // 2, draw_info.TOP_PAD, draw_info.width - draw_info.SIDE_PAD,
+                      draw_info.height)
         pygame.draw.rect(draw_info.window, draw_info.BACKGROUND_COLOR, clear_rect)
 
     for i, val, in enumerate(lst):
@@ -124,7 +127,6 @@ def draw_list(draw_info, color_positions={}, clear_bg=False):
 
         color = draw_info.GRADIENTS[i % 3]
         if i in color_positions:
-
             color = color_positions[i]
 
         pygame.draw.rect(draw_info.window, color, ((x, y), (draw_info.block_width, draw_info.height)))
@@ -140,7 +142,7 @@ def main():
     height = 720
     width = 1280
 
-    n = 100
+    n = 300
     min_val = 0
     max_val = 100
 
@@ -184,10 +186,13 @@ def main():
                 ascending = True
             elif event.key == pygame.K_d and not sorting:
                 ascending = False
-            elif event.key == pygame.K_i:
-                sorting_alg_name = "Insertion Sort"
             elif event.key == pygame.K_b:
                 sorting_alg_name = "Bubble Sort"
+                sorting_alg = bubble_sort
+            elif event.key == pygame.K_i:
+                sorting_alg_name = "Insertion Sort"
+                sorting_alg = insertion_sort
+
     pygame.quit()
 
 
