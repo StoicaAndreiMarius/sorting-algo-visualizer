@@ -11,6 +11,7 @@ class DrawInformation:
     GREEN = 0, 255, 0
     RED = 255, 0, 0
     GREY = 128, 128, 128
+    BLUE = 22, 105, 240
     BACKGROUND_COLOR = WHITE
 
     GRADIENTS = [
@@ -63,15 +64,49 @@ def bubble_sort(draw_info, ascending = True):
                 yield True
 
 
-def draw(draw_info):
+def insertionSort(draw_info, ascending = True):
+    arr = draw_info.lst
+    n = len(arr)  # Get the length of the array
+
+    if n <= 1:
+        return  # If the array has 0 or 1 element, it is already sorted, so return
+
+    if ascending == True:
+        for i in range(1, n):  # Iterate over the array starting from the second element
+            key = arr[i]  # Store the current element as the key to be inserted in the right position
+            j = i - 1
+
+            while j >= 0 and key < arr[j]:  # Move elements greater than key one position ahead
+                arr[j + 1] = arr[j]  # Shift elements to the right
+                j -= 1
+            draw_list(draw_info, {arr[j]: draw_info.GREEN, arr[j+1]: draw_info.RED}, clear_bg=True)
+            arr[j + 1] = key  # Insert the key in the correct position
+    else:
+        for i in range(n, 1, -1):  # Iterate over the array starting from the second element
+            key = arr[i]  # Store the current element as the key to be inserted in the right position
+            j = i - 1
+
+            while j >= 0 and key < arr[j]:  # Move elements greater than key one position ahead
+                arr[j + 1] = arr[j]  # Shift elements to the right
+                j -= 1
+            draw_list(draw_info, {arr[j]: draw_info.GREEN, arr[j + 1]: draw_info.RED}, clear_bg=True)
+            arr[j + 1] = key  # Insert the key in the correct position
+
+
+def draw(draw_info, sorting_alg_name, ascending):
     draw_info.window.fill(draw_info.BACKGROUND_COLOR)
     draw_list(draw_info)
 
-    controls = draw_info.FONT.render("R - Reset | SPACE - Start Sorting | A - Ascending | D - Descending", 1, draw_info.BLACK)
-    draw_info.window.blit(controls, (draw_info.width/2 - controls.get_width()/2, 5))
+    current_sort = draw_info.FONT.render(f"{sorting_alg_name} - {'Ascending' if ascending == True else "Descending"}", 1, draw_info.BLUE)
+    draw_info.window.blit(current_sort, (draw_info.width / 2 - current_sort.get_width() / 2, 5))
+
+    controls = draw_info.FONT.render("R - Reset | SPACE - Start Sorting | A - Ascending | D - Descending", 1,
+                                     draw_info.BLACK)
+    draw_info.window.blit(controls, (draw_info.width / 2 - controls.get_width() / 2, current_sort.get_height()+5))
 
     sorting = draw_info.FONT.render("I - Insertion Sort | B - Bubble Sort", 1, draw_info.BLACK)
-    draw_info.window.blit(sorting, (draw_info.width / 2 - sorting.get_width() / 2, controls.get_height()+5))
+    draw_info.window.blit(sorting, (draw_info.width / 2 - sorting.get_width() / 2,
+                                    controls.get_height()+current_sort.get_height()+5))
 
     pygame.display.update()
 
@@ -128,7 +163,7 @@ def main():
             except StopIteration:
                 sorting = False
         else:
-            draw(draw_info)
+            draw(draw_info, sorting_alg_name, ascending)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -149,7 +184,10 @@ def main():
                 ascending = True
             elif event.key == pygame.K_d and not sorting:
                 ascending = False
-
+            elif event.key == pygame.K_i:
+                sorting_alg_name = "Insertion Sort"
+            elif event.key == pygame.K_b:
+                sorting_alg_name = "Bubble Sort"
     pygame.quit()
 
 
