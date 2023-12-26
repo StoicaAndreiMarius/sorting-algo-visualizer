@@ -46,7 +46,7 @@ class DrawInformation:
 
 
 def generate_starting_list(n, min_val, max_val):
-    lst = [random.randint(min_val, max_val) for _ in range(n + 1)]
+    lst = [random.randint(min_val, max_val) for _ in range(n)]
     return lst
 
 
@@ -82,11 +82,11 @@ def insertion_sort(draw_info, ascending=True):
             arr[j + 1] = key  # Insert the key in the correct position
             yield True
     else:
-        for i in range(n, 1, -1):  # Iterate over the array starting from the second element
+        for i in range(1, n):  # Iterate over the array starting from the second element
             key = arr[i]  # Store the current element as the key to be inserted in the right position
             j = i - 1
 
-            while j >= 0 and key < arr[j]:  # Move elements greater than key one position ahead
+            while j >= 0 and key > arr[j]:  # Move elements greater than key one position ahead
                 arr[j + 1] = arr[j]  # Shift elements to the right
                 j -= 1
             draw_list(draw_info, {arr[j]: draw_info.GREEN, arr[j + 1]: draw_info.RED, key:draw_info.BLUE}, clear_bg=True)
@@ -142,7 +142,7 @@ def main():
     height = 720
     width = 1280
 
-    n = 300
+    n = 100
     min_val = 0
     max_val = 100
 
