@@ -67,7 +67,7 @@ def main():
                     if event.key is pygame.K_BACKSPACE:
                         f.size_input = f.size_input[:-1]
                         f.draw(draw_info, sorting_alg_name, ascending, size_input_rect, speed_input_rect)
-                    elif event.key is not pygame.K_RETURN:
+                    elif event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9, pygame.K_0]:
                         f.size_input += event.unicode
                         f.draw(draw_info, sorting_alg_name, ascending, size_input_rect, speed_input_rect)
                     if event.key is pygame.K_RETURN:
@@ -79,7 +79,7 @@ def main():
                     if event.key is pygame.K_BACKSPACE:
                         f.speed_input = f.speed_input[:-1]
                         f.draw(draw_info, sorting_alg_name, ascending, size_input_rect, speed_input_rect)
-                    elif event.key is not pygame.K_RETURN:
+                    elif event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9, pygame.K_0]:
                         f.speed_input += event.unicode
                         f.draw(draw_info, sorting_alg_name, ascending, size_input_rect, speed_input_rect)
                     if event.key is pygame.K_RETURN:
